@@ -1,6 +1,8 @@
 import { Webhook } from "standardwebhooks";
 
 import type {
+	WebhookCheckoutCreatedPayload,
+	WebhookCheckoutUpdatedPayload,
 	WebhookSubscriptionActivePayload,
 	WebhookSubscriptionCanceledPayload,
 	WebhookSubscriptionCreatedPayload,
@@ -11,6 +13,8 @@ import { type NextRequest, NextResponse } from "next/server";
 import { env } from "@/env";
 
 type WebhookEvent =
+	| WebhookCheckoutCreatedPayload
+	| WebhookCheckoutUpdatedPayload
 	| WebhookSubscriptionCreatedPayload
 	| WebhookSubscriptionActivePayload
 	| WebhookSubscriptionCanceledPayload
@@ -36,6 +40,14 @@ export async function POST(request: NextRequest) {
 
 	// Handle the event
 	switch (webhookPayload.type) {
+		// Checkout has been created
+		case "checkout.created":
+			break;
+
+		// Checkout has been updated - this will be triggered when checkout status goes from confirmed -> succeeded
+		case "checkout.updated":
+			break;
+
 		// Subscription has been created
 		case "subscription.created":
 			break;
