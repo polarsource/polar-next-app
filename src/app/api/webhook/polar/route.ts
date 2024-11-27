@@ -1,40 +1,31 @@
-import { Webhook } from "standardwebhooks";
-
-import type {
-	WebhookCheckoutCreatedPayload,
-	WebhookCheckoutUpdatedPayload,
-	WebhookSubscriptionActivePayload,
-	WebhookSubscriptionCanceledPayload,
-	WebhookSubscriptionCreatedPayload,
-	WebhookSubscriptionRevokedPayload,
-	WebhookSubscriptionUpdatedPayload,
-} from "@polar-sh/sdk/models/components";
+import {
+	validateEvent,
+	WebhookVerificationError,
+} from "@polar-sh/sdk/webhooks";
 import { type NextRequest, NextResponse } from "next/server";
 import { env } from "@/env";
 
-type WebhookEvent =
-	| WebhookCheckoutCreatedPayload
-	| WebhookCheckoutUpdatedPayload
-	| WebhookSubscriptionCreatedPayload
-	| WebhookSubscriptionActivePayload
-	| WebhookSubscriptionCanceledPayload
-	| WebhookSubscriptionUpdatedPayload
-	| WebhookSubscriptionRevokedPayload;
-
 export async function POST(request: NextRequest) {
 	const requestBody = await request.text();
-
 	const webhookHeaders = {
 		"webhook-id": request.headers.get("webhook-id") ?? "",
 		"webhook-timestamp": request.headers.get("webhook-timestamp") ?? "",
 		"webhook-signature": request.headers.get("webhook-signature") ?? "",
 	};
 
-	const webhookSecret = Buffer.from(env.POLAR_WEBHOOK_SECRET).toString(
-		"base64",
-	);
-	const wh = new Webhook(webhookSecret);
-	const webhookPayload = wh.verify(requestBody, webhookHeaders) as WebhookEvent;
+	let webhookPayload: ReturnType<typeof validateEvent>;
+	try {
+		webhookPayload = validateEvent(
+			requestBody,
+			webhookHeaders,
+			env.POLAR_WEBHOOK_SECRET,
+		);
+	} catch (error) {
+		if (error instanceof WebhookVerificationError) {
+			return new NextResponse("", { status: 403 });
+		}
+		throw error;
+	}
 
 	console.log("Incoming Webhook", webhookPayload.type);
 
