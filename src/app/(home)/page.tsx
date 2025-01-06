@@ -36,7 +36,7 @@ export default async function Home() {
 						<div className="flex flex-row gap-x-4 justify-between items-center">
 							<Link
 								className="h-8 flex flex-row items-center justify-center rounded-full bg-white text-black font-medium px-4"
-								href={`/checkout?priceId=${product.prices[0].id}`}
+								href={`/checkout?productId=${product.id}`}
 							>
 								Buy
 							</Link>

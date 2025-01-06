@@ -1,20 +1,8 @@
-import { api } from "@/api";
-import { type NextRequest, NextResponse } from "next/server";
+import { env } from "@/env";
+import { Checkout } from "@polar-sh/nextjs";
 
-export async function GET(req: NextRequest) {
-	const url = new URL(req.url);
-	const productPriceId = url.searchParams.get("priceId") ?? "";
-	const successUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}/confirmation?checkout_id={CHECKOUT_ID}`;
-
-	try {
-		const result = await api.checkouts.custom.create({
-			productPriceId,
-			successUrl,
-		});
-
-		return NextResponse.redirect(result.url);
-	} catch (error) {
-		console.error(error);
-		return NextResponse.error();
-	}
-}
+export const GET = Checkout({
+	accessToken: env.POLAR_ACCESS_TOKEN,
+	server: "sandbox", // Use sandbox for testing purposes - otherwise use 'production' or omit this line
+	successUrl: `http://127.0.0.1:3000/confirmation`
+})
