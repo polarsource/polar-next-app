@@ -5,7 +5,6 @@ import { api } from "@/api";
 
 export default async function Home() {
 	const { result } = await api.products.list({
-		organizationId: env.POLAR_ORGANIZATION_ID,
 		isArchived: false,
 	});
 
