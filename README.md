@@ -1,9 +1,1 @@
-# Polar Next.js Example App
-
-This repository demonstrates how you can setup Polar with Next.js with ease. [Read the Polar Next.js integration guide for more information.](https://docs.polar.sh/documentation/integration-guides/nextjs)
-
-This repository covers the following concepts:
-
-- Rendering Polar Products
-- Redirection to a generated Checkout session
-- Capturing Webhook events for reconcilation with your database
+This example has now been moved to [https://github.com/polarsource/examples/tree/main/with-nextjs](https://github.com/polarsource/examples/tree/main/with-nextjs).
